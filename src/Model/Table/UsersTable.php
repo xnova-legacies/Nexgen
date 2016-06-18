@@ -1,18 +1,18 @@
 <?php
 namespace App\Model\Table;
 
-use App\Model\Entity\Post;
+use App\Model\Entity\User;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
 use Cake\Validation\Validator;
 
 /**
- * Posts Model
+ * Users Model
  *
- * @property \Cake\ORM\Association\BelongsTo $Users
+ * @property \Cake\ORM\Association\HasMany $Posts
  */
-class PostsTable extends Table
+class UsersTable extends Table
 {
 
     /**
@@ -25,15 +25,14 @@ class PostsTable extends Table
     {
         parent::initialize($config);
 
-        $this->table('posts');
-        $this->displayField('title');
+        $this->table('users');
+        $this->displayField('name');
         $this->primaryKey('id');
 
         $this->addBehavior('Timestamp');
 
-        $this->belongsTo('Users', [
-            'foreignKey' => 'user_id',
-            'joinType' => 'INNER'
+        $this->hasMany('Posts', [
+            'foreignKey' => 'user_id'
         ]);
     }
 
@@ -50,12 +49,17 @@ class PostsTable extends Table
             ->allowEmpty('id', 'create');
 
         $validator
-            ->requirePresence('title', 'create')
-            ->notEmpty('title');
+            ->requirePresence('name', 'create')
+            ->notEmpty('name');
 
         $validator
-            ->requirePresence('body', 'create')
-            ->notEmpty('body');
+            ->add('email', 'valid', ['rule' => 'email'])
+            ->requirePresence('email', 'create')
+            ->notEmpty('email');
+
+        $validator
+            ->requirePresence('password', 'create')
+            ->notEmpty('password');
 
         return $validator;
     }
@@ -69,7 +73,7 @@ class PostsTable extends Table
      */
     public function buildRules(RulesChecker $rules)
     {
-        $rules->add($rules->existsIn(['user_id'], 'Users'));
+        $rules->add($rules->isUnique(['email']));
         return $rules;
     }
 }

@@ -1,32 +1,47 @@
-<head>
-<style type="text/css">
-h1{color: #494646;}
-.row{ margin:20px 20px 20px 20px;width: 100%;}
-.post-box {width: 30%;float: left;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;}
-.post-content {padding: 0;}
-.post-content {display: block;padding: 4px;margin-bottom: 20px;line-height: 1.42857143;background-color: #fff;border: 1px solid #ddd;border-radius: 4px;-webkit-transition: all .2s ease-in-out;transition: all .2s ease-in-out;}
-.post-content .caption {padding: 9px;color: #333;}
-.post-content .caption p{font-size: 14px;}
-.post-content h4 {font-size: 18px;margin-top: 10px;margin-bottom: 10px;}
-.post-content a {color: #428bca;text-decoration: none;background: transparent;}
-.post-content p {margin: 0 0 10px;}
-.no-record{font-size: 16px;font-weight: bold;color: #DD4B39;padding: 10px}
-</style>
-</head>
-<h1>Blog Posts</h1>
-<?= $this->Html->link('Add New Post', ['action' => 'add']) ?>
-<div class="row">
-    <?php if(!empty($posts)): foreach($posts as $post): ?>
-    <div class="post-box">
-        <div class="post-content">
-		<?= $this->Html->link('Edit', ['action' => 'edit', $post->id]) ?>
-            <div class="caption">
-                <h4><a href="javascript:void(0);"><?php echo $post->title; ?></a></h4>
-                <p><?php echo $post->description; ?></p>
-            </div>
-        </div>
+<nav class="large-3 medium-4 columns" id="actions-sidebar">
+    <ul class="side-nav">
+        <li class="heading"><?= __('Actions') ?></li>
+        <li><?= $this->Html->link(__('New Post'), ['action' => 'add']) ?></li>
+        <li><?= $this->Html->link(__('List Users'), ['controller' => 'Users', 'action' => 'index']) ?></li>
+        <li><?= $this->Html->link(__('New User'), ['controller' => 'Users', 'action' => 'add']) ?></li>
+    </ul>
+</nav>
+<div class="posts index large-9 medium-8 columns content">
+    <h3><?= __('Posts') ?></h3>
+    <table cellpadding="0" cellspacing="0">
+        <thead>
+            <tr>
+                <th><?= $this->Paginator->sort('id') ?></th>
+                <th><?= $this->Paginator->sort('title') ?></th>
+                <th><?= $this->Paginator->sort('user_id') ?></th>
+                <th><?= $this->Paginator->sort('created') ?></th>
+                <th><?= $this->Paginator->sort('modified') ?></th>
+                <th class="actions"><?= __('Actions') ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($posts as $post): ?>
+            <tr>
+                <td><?= $this->Number->format($post->id) ?></td>
+                <td><?= h($post->title) ?></td>
+                <td><?= $post->has('user') ? $this->Html->link($post->user->name, ['controller' => 'Users', 'action' => 'view', $post->user->id]) : '' ?></td>
+                <td><?= h($post->created) ?></td>
+                <td><?= h($post->modified) ?></td>
+                <td class="actions">
+                    <?= $this->Html->link(__('View'), ['action' => 'view', $post->id]) ?>
+                    <?= $this->Html->link(__('Edit'), ['action' => 'edit', $post->id]) ?>
+                    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $post->id], ['confirm' => __('Are you sure you want to delete # {0}?', $post->id)]) ?>
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <div class="paginator">
+        <ul class="pagination">
+            <?= $this->Paginator->prev('< ' . __('previous')) ?>
+            <?= $this->Paginator->numbers() ?>
+            <?= $this->Paginator->next(__('next') . ' >') ?>
+        </ul>
+        <p><?= $this->Paginator->counter() ?></p>
     </div>
-    <?php endforeach; else: ?>
-    <p class="no-record">No post(s) found......</p>
-    <?php endif; ?>
 </div>

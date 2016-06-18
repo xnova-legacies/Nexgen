@@ -43,6 +43,20 @@ class AppController extends Controller
 
         $this->loadComponent('RequestHandler');
         $this->loadComponent('Flash');
+        $this->loadComponent('Auth', [
+                'authenticate' => [
+                    'Form' => [
+                        'fields' => [
+                            'username' => 'email',
+                            'password' => 'password'
+                        ]
+                    ]
+                ],
+                'loginAction' => [
+                    'controller' => 'Users',
+                    'action' => 'login'
+                ]
+            ]);
     }
 
     /**
@@ -58,5 +72,13 @@ class AppController extends Controller
         ) {
             $this->set('_serialize', true);
         }
+
+        // Login Check
+        if($this->request->session()->read('Auth.User')){
+             $this->set('loggedIn', true);   
+        } else {
+            $this->set('loggedIn', false); 
+        }
     }
+
 }

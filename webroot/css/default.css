@@ -1,0 +1,11 @@
+div.login {
+    display: block;
+    font-weight: normal;
+    padding: 0 1.5rem 0 1.5rem;
+    transition: height 300ms ease-out 0s;
+    top: 15px;
+    right: 15px;
+    z-index: 999;
+    overflow: hidden;
+    line-height: 2.5em;
+}
